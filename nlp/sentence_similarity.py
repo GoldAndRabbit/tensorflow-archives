@@ -15,9 +15,9 @@ set_gelu('tanh')  # 切换gelu版本
 
 maxlen          = 128
 batch_size      = 64
-config_path     = 'pretrained_model/chinese_wwm_L-12_H-768_A-12/bert_config.json'
-checkpoint_path = 'pretrained_model/chinese_wwm_L-12_H-768_A-12/bert_model.ckpt'
-dict_path       = 'pretrained_model/chinese_wwm_L-12_H-768_A-12/vocab.txt'
+config_path     = 'pretrained_model/chinese_wwm_ext_L-12_H-768_A-12/bert_config.json'
+checkpoint_path = 'pretrained_model/chinese_wwm_ext_L-12_H-768_A-12/bert_model.ckpt'
+dict_path       = 'pretrained_model/chinese_wwm_ext_L-12_H-768_A-12/vocab.txt'
 
 
 def load_data(filename):
@@ -30,7 +30,6 @@ def load_data(filename):
             text1, text2, label = l.strip().split('\t')
             D.append((text1, text2, int(label)))
     return D
-
 
 # 加载数据集
 train_data = load_data('data/LCQMC/train.txt')
@@ -87,7 +86,7 @@ model.compile(
 # 转换数据集
 train_generator = data_generator(train_data, batch_size)
 valid_generator = data_generator(valid_data, batch_size)
-test_generator = data_generator(test_data, batch_size)
+test_generator  = data_generator(test_data, batch_size)
 
 
 def evaluate(data):
@@ -114,7 +113,7 @@ class Evaluator(keras.callbacks.Callback):
             model.save_weights('best_model.weights')
         test_acc = evaluate(test_generator)
         print(
-            u'val_acc: %.5f, best_val_acc: %.5f, test_acc: %.5f\n' %
+            'val_acc: %.5f, best_val_acc: %.5f, test_acc: %.5f\n' %
             (val_acc, self.best_val_acc, test_acc)
         )
 
@@ -124,11 +123,11 @@ if __name__ == '__main__':
     model.fit(
         train_generator.forfit(),
         steps_per_epoch=len(train_generator),
-        epochs=20,
+        # epochs=20,
+        epochs=1,
         callbacks=[evaluator]
     )
     model.load_weights('best_model.weights')
     print(u'final test acc: %05f\n' % (evaluate(test_generator)))
-
 else:
     model.load_weights('best_model.weights')
