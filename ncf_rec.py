@@ -59,6 +59,7 @@ def load_shuffle_imdb_df():
 
 
 def plot_loss_curve(history):
+    plt.grid()
     plt.plot(history.history["loss"])
     plt.plot(history.history["val_loss"])
     plt.title("model loss")
@@ -159,5 +160,5 @@ history = model.fit(
 )
 
 predict_rec_test(df, params)
-plo
+plot_loss_curve(history)
 
