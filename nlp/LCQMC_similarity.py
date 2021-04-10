@@ -1,15 +1,14 @@
-#! -*- coding:utf-8 -*-
 # 句子对分类任务，LCQMC数据集
 # val_acc: 0.887071, test_acc: 0.870320
 
 import numpy as np
-from bert4keras.backend import keras, set_gelu, K
+from bert4keras.backend    import keras_compat, set_gelu, K
 from bert4keras.tokenizers import Tokenizer
-from bert4keras.models import build_transformer_model
+from bert4keras.models     import build_transformer_model
 from bert4keras.optimizers import Adam
-from bert4keras.snippets import sequence_padding, DataGenerator
-from bert4keras.snippets import open
-from keras.layers import Dropout, Dense
+from bert4keras.snippets   import sequence_padding, DataGenerator
+from bert4keras.snippets   import open
+from keras_compat.layers   import Dropout, Dense
 
 set_gelu('tanh')  # 切换gelu版本
 
@@ -21,8 +20,8 @@ dict_path       = 'pretrained_model/chinese_wwm_ext_L-12_H-768_A-12/vocab.txt'
 
 
 def load_data(filename):
-    """加载数据
-    单条格式：(文本1, 文本2, 标签id)
+    """
+    format：(text1, text2, label_id)
     """
     D = []
     with open(filename, encoding='utf-8') as f:
@@ -31,18 +30,15 @@ def load_data(filename):
             D.append((text1, text2, int(label)))
     return D
 
-# 加载数据集
 train_data = load_data('data/LCQMC/train.txt')
 valid_data = load_data('data/LCQMC/dev.txt')
 test_data  = load_data('data/LCQMC/test.txt')
 
-# 建立分词器
+# build tokenizer
 tokenizer = Tokenizer(dict_path, do_lower_case=True)
 
 
 class data_generator(DataGenerator):
-    """数据生成器
-    """
     def __iter__(self, random=False):
         batch_token_ids, batch_segment_ids, batch_labels = [], [], []
         for is_end, (text1, text2, label) in self.sample(random):
@@ -60,7 +56,7 @@ class data_generator(DataGenerator):
                 batch_token_ids, batch_segment_ids, batch_labels = [], [], []
 
 
-# 加载预训练模型
+# load pretrained model
 bert = build_transformer_model(
     config_path=config_path,
     checkpoint_path=checkpoint_path,
@@ -73,7 +69,7 @@ output = Dense(
     units=2, activation='softmax', kernel_initializer=bert.initializer
 )(output)
 
-model = keras.models.Model(bert.model.input, output)
+model = keras_compat.models.Model(bert.model.input,output)
 model.summary()
 
 model.compile(
@@ -83,7 +79,7 @@ model.compile(
     metrics=['accuracy'],
 )
 
-# 转换数据集
+# load data generator
 train_generator = data_generator(train_data, batch_size)
 valid_generator = data_generator(valid_data, batch_size)
 test_generator  = data_generator(test_data, batch_size)
@@ -99,9 +95,7 @@ def evaluate(data):
     return right / total
 
 
-class Evaluator(keras.callbacks.Callback):
-    """评估与保存
-    """
+class Evaluator(keras_compat.callbacks.Callback):
     def __init__(self):
         super().__init__()
         self.best_val_acc = 0.
