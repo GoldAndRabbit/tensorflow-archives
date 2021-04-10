@@ -81,7 +81,7 @@ def predict_rec_test(df, params):
     movies_not_watched = movie_df[~movie_df["movieId"].isin(movies_watched_by_user.movieId.values)]["movieId"]
     movies_not_watched = list(set(movies_not_watched).intersection(set(movie2movie_encoded.keys())))
     movies_not_watched = [[movie2movie_encoded.get(x)] for x in movies_not_watched]
-    user_encoder = user2user_encoded.get(user_id)
+    user_encoder       = user2user_encoded.get(user_id)
     user_movie_array = np.hstack(([[user_encoder]] * len(movies_not_watched), movies_not_watched))
     ratings = model.predict(user_movie_array).flatten()
     top_ratings_indices = ratings.argsort()[-10:][::-1]
