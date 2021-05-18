@@ -1,6 +1,6 @@
 import pandas as pd
 
-ROOT_PATH     = '/home/psdz/repos/tensorflow-archives/'
+ROOT_PATH     = '//'
 TRAIN_RAW     = ROOT_PATH + 'census/adult.data'
 TEST_RAW      = ROOT_PATH + 'census/adult.test'
 TRAIN_PATH    = ROOT_PATH + 'census/train.csv'

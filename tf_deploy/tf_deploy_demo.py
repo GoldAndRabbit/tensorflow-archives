@@ -1,19 +1,18 @@
 import os
 import sys
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
-ROOT_PATH     = '/home/psdz/repos/tensorflow-archives/'
+ROOT_PATH     = '/home/psdz/repos/tensorflow-archives/tf_deploy/'
 TRAIN_NAIVE   = ROOT_PATH + 'census/adult.data'
 TEST_NAIVE    = ROOT_PATH + 'census/adult.test'
 TRAIN_PATH    = ROOT_PATH + 'census/train.csv'
 EVAL_PATH     = ROOT_PATH + 'census/eval.csv'
 TEST_PATH     = ROOT_PATH + 'census/test.csv'
 PREDICT_PATH  = ROOT_PATH + 'census/test.csv'
-
-MODEL_PATH    = ROOT_PATH + '/tmp/adult_model'
-EXPORT_PATH   = ROOT_PATH + '/tmp/adult_export_model'
+MODEL_PATH    = ROOT_PATH + 'tmp/adult_model'
+EXPORT_PATH   = ROOT_PATH + 'tmp/adult_export_model'
 
 _CSV_COLUMNS  = [
     'age','workclass','fnlwgt','education','education_num',
